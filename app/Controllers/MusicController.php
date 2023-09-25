@@ -20,38 +20,35 @@ class MusicController extends BaseController
     }
 
     public function insert()
-        {
-            // Validate the uploaded file
-            if ($this->validate([
-                'filepath' => [
-                    
-                     'uploaded[filepath]',
-                        'mime_in[filepath,audio/mpeg,audio/mp3]',
-                        'max_size[filepath,20480]', // 20 MB (20 * 1024 KB)
-                ]
-            ])) {
-                // Upload and save the file
-                $audio = $this->request->getFile('filepath');
-                $newName = $audio->getRandomName();
-                $audio->move(ROOTPATH . 'public/uploads', $newName);
+    {
+        $uploadDirectory = WRITEPATH . 'uploads/';
 
-                $data = [
-                    'playlist' => $this->request->getVar('cplaylist'),
-                    'file' => $newName,
-                    'file_path' => 'uploads/' . $newName
-                ];
+        if ($this->validate([
+            'filepath' => [
+                'uploaded[filepath]',
+                'mime_in[filepath,audio/mpeg,audio/mp3]',
+                'max_size[filepath,20480]',
+            ]
+        ])) {
+            $audio = $this->request->getFile('filepath');
+            $newName = $audio->getRandomName();
+            $audio->move($uploadDirectory, $newName);
 
-                $this->player->insert($data); // Assuming 'player' is your model.
+            $data = [
+                'playlist' => $this->request->getVar('cplaylist'),
+                'file' => $newName,
+                'file_path' => 'uploads/' . $newName
+            ];
 
-                return redirect()->to('/player')->with('success', 'File uploaded and data saved successfully!');
-            } else {
-                // Validation failed, capture the errors and pass them to the view
-                $validationErrors = $this->validation->getErrors();
+            $this->player->insert($data);
 
-                // Load the view and pass validation errors
-                return view('upload_audio', ['validationErrors' => $validationErrors]);
-            }
+            return redirect()->to('/player')->with('success', 'File uploaded and data saved successfully!');
+        } else {
+            $validationErrors = $this->validation->getErrors();
+            return view('upload_audio', ['validationErrors' => $validationErrors]);
         }
+    }
+
 
 
 
