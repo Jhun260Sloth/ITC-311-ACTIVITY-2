@@ -119,33 +119,35 @@
            
             <div class="modal-body">
 
-             <form action="/insert" method="post"> 
-                    <label for="SelectProdCat2" class="form-label">Select Playlist</label>
-                    <select class="form-select d-inline-block ml-2" name="SelectProdCat2" id="SelectProdCat2">
-                        <?php
-                        $seenItems = array();
-                        foreach ($player as $ms) {
-                            $item = $ms['playslist'];
+        <form action="/insert" method="post" enctype="multipart/form-data">
 
-                            if (!in_array($item, $seenItems)) {
-                                echo "<option>{$item}</option>";
-                                $seenItems[] = $item;
-                            }
-                        }
-                        ?>
-                    </select>
-                    <br>
-                    <br>
-                   
-                    <br>
-                    <input type="hidden" class="form-control" name="cplaylist" id="cplaylist" readonly>
-                    <br>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success">Upload</button>
-                    </div>
-            </form>
+              <label for="SelectProdCat2" class="form-label">Select Playlist</label>
+              <select class="form-select d-inline-block ml-2" name="cplaylist" id="SelectProdCat2">
+                  <?php
+                  $seenItems = array();
+                  foreach ($player as $ms) {
+                      $item = $ms['playslist'];
+
+                      if (!in_array($item, $seenItems)) {
+                          echo "<option>{$item}</option>";
+                          $seenItems[] = $item;
+                      }
+                  }
+                  ?>
+              </select>
+              <br><br>
+
+           <input type="file" name="filepath" accept=".mp3" required> <br> <br>
+
+
+              <!-- Remove the hidden input for cplaylist, as it's now part of the <select> element -->
+
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-success">Upload</button>
+              </div>
+          </form>
 
                 <script>
                       function setInitialValue() {
