@@ -19,35 +19,56 @@ class MusicController extends BaseController
         echo $player;
     }
 
-    public function insert()
-    {
-        $uploadDirectory = WRITEPATH . 'uploads/';
+      public function insert()
+        {
+            $uploadDirectory = WRITEPATH . 'uploads/';
 
-        if ($this->validate([
-            'filepath' => [
-                'uploaded[filepath]',
-                'mime_in[filepath,audio/mpeg,audio/mp3]',
-                'max_size[filepath,20480]',
-            ]
-        ])) {
-            $audio = $this->request->getFile('filepath');
-            $newName = $audio->getRandomName();
-            $audio->move($uploadDirectory, $newName);
+            echo "Insert method called.<br>";
 
-            $data = [
-                'playlist' => $this->request->getVar('cplaylist'),
-                'file' => $newName,
-                'file_path' => 'uploads/' . $newName
-            ];
+            if ($this->request->getFile('filepath')->isValid()) {
+                $audio = $this->request->getFile('filepath');
+                $uploadedFileExtension = $audio->getExtension(); 
+                echo "Uploaded file extension: $uploadedFileExtension<br>";
 
-            $this->player->insert($data);
+                $allowedExtensions = ['mp3'];
 
-            return redirect()->to('/player')->with('success', 'File uploaded and data saved successfully!');
-        } else {
-            $validationErrors = $this->validation->getErrors();
-            return view('upload_audio', ['validationErrors' => $validationErrors]);
+                $uploadedFileExtension = strtolower($uploadedFileExtension);
+
+                $maxFileSizeKB = 20480; 
+                $maxFileSizeInBytes = $maxFileSizeKB * 1024;
+                $uploadedFileSize = $audio->getSize();
+
+                if ($uploadedFileSize > $maxFileSizeInBytes) {
+                    echo "File size exceeds the maximum allowed size (20 MB).<br>";
+
+                    return redirect()->to('/error')->with('error', 'File size exceeds the maximum allowed size (20 MB).');
+                }
+
+                $newName = $audio->getRandomName();
+                $newNameWithExtension = pathinfo($newName, PATHINFO_FILENAME) . '.mp3';
+
+                $audio->move($uploadDirectory, $newNameWithExtension);
+
+                $data = [
+                    'playlist' => $this->request->getVar('cplaylist'),
+                    'file' => $newNameWithExtension, 
+                    'file_path' => 'public/uploads/' . $newNameWithExtension 
+                ];
+
+                echo "Data ready for insertion: " . print_r($data, true) . "<br>";
+
+                     $this->player->insert($data);
+
+                echo "Data insertion attempted.<br>";
+
+                return redirect()->to('/player')->with('success', 'File uploaded and data saved successfully!');
+            } else {
+                echo "File upload failed. Please try again.<br>";
+
+                return redirect()->to('/error')->with('error', 'File upload failed. Please try again.');
+            }
         }
-    }
+
 
 
 

@@ -18,15 +18,16 @@
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#musicup">Upload Music </button>
 
 
-
-
     <audio id="audio" controls autoplay></audio>
+
     <ul id="playlist">
-
-        <li data-src="/home/jhunz/Downloads/Green.mp3">Green
-        </li>
-
+      <?php foreach ($player as $ms): ?>
+          <li data-src="<?= $ms['file_path']; ?>">
+              <?= $ms['file']; ?>
+          </li>
+      <?php endforeach; ?>
     </ul>
+
 
 
 
@@ -140,7 +141,7 @@
               </select>
               <br><br>
 
-           <input type="file" name="filepath" required> <br> <br>
+          <input type="file" name="filepath"> <br> <br>
 
 
               <!-- Remove the hidden input for cplaylist, as it's now part of the <select> element -->

@@ -1,4 +1,9 @@
 <?php
 
-// override core en language system validation or define your own en language validation message
-return [];
+return [
+    'custom' => [
+        'filepath' => [
+            'mime_in' => 'The uploaded file is not a valid audio file (MP3).',
+        ],
+    ],
+];

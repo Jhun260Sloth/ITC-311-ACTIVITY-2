@@ -6,4 +6,11 @@
             <?php endforeach; ?>
         </ul>
     </div>
+
+    <div class="alert alert-danger">
+    <?= esc($validationErrors['filepath']) ?>
+</div>
+
 <?php endif; ?>
+
+
