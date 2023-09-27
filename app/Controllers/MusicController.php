@@ -21,7 +21,7 @@ class MusicController extends BaseController
 
       public function insert()
         {
-            $uploadDirectory = WRITEPATH . 'uploads/';
+            $uploadDirectory = WRITEPATH . 'public/uploads/';
 
             echo "Insert method called.<br>";
 
@@ -48,6 +48,7 @@ class MusicController extends BaseController
                 $newNameWithExtension = pathinfo($newName, PATHINFO_FILENAME) . '.mp3';
 
                 $audio->move($uploadDirectory, $newNameWithExtension);
+
 
                 $data = [
                     'playlist' => $this->request->getVar('cplaylist'),
