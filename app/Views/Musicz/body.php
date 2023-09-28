@@ -21,11 +21,13 @@
     <audio id="audio" controls autoplay></audio>
 
     <ul id="playlist">
+
       <?php foreach ($player as $ms): ?>
           <li data-src="<?= $ms['file_path']; ?>">
               <?= $ms['file']; ?>
           </li>
       <?php endforeach; ?>
+      
     </ul>
 
 
