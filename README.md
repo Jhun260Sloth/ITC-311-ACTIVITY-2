@@ -2,7 +2,7 @@ Laboratory 2
 
 Not Finished
 - Not able to play the music in the list
-- Not able to move thee music files to the uploads folder located in the public 
+- Not able to move the music files to the uploads folder located in the public 
 
 
 ![image](https://github.com/Jhun260Sloth/ITC-311-ACTIVITY-2/assets/99332717/a4e820d9-f452-4927-9d09-0fae569ee4c0)
