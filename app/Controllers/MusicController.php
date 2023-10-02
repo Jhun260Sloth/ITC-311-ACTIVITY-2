@@ -7,10 +7,12 @@ use App\Controllers\BaseController;
 class MusicController extends BaseController
 {
     private $player;
+    private $playL;
 
     public function __construct()
     {
         $this->player = new \App\Models\MusicModel();
+        $this->playL = new \App\Models\MusicL();
         $this->validation = \Config\Services::validation();
     }
 
@@ -21,63 +23,63 @@ class MusicController extends BaseController
 
       public function insert()
         {
-            $uploadDirectory = WRITEPATH . 'public/uploads/';
+           $mp3File = $this->request->getFile('filepath'); 
 
-            echo "Insert method called.<br>";
-
-            if ($this->request->getFile('filepath')->isValid()) {
-                $audio = $this->request->getFile('filepath');
-                $uploadedFileExtension = $audio->getExtension(); 
-                echo "Uploaded file extension: $uploadedFileExtension<br>";
-
-                $allowedExtensions = ['mp3'];
-
-                $uploadedFileExtension = strtolower($uploadedFileExtension);
-
-                $maxFileSizeKB = 20480; 
-                $maxFileSizeInBytes = $maxFileSizeKB * 1024;
-                $uploadedFileSize = $audio->getSize();
-
-                if ($uploadedFileSize > $maxFileSizeInBytes) {
-                    echo "File size exceeds the maximum allowed size (20 MB).<br>";
-
-                    return redirect()->to('/error')->with('error', 'File size exceeds the maximum allowed size (20 MB).');
-                }
-
-                $newName = $audio->getRandomName();
-                $newNameWithExtension = pathinfo($newName, PATHINFO_FILENAME) . '.mp3';
-
-                $audio->move($uploadDirectory, $newNameWithExtension);
-
+            if ($mp3File->isValid() && !$mp3File->hasMoved()) {
+                $mp3File->move(ROOTPATH . 'public/uploads'); 
+                $mp3FileName = '/uploads/' . $mp3File->getName(); 
+                $mp3Name = $mp3File->getName();
 
                 $data = [
-                    'playlist' => $this->request->getVar('cplaylist'),
-                    'file' => $newNameWithExtension, 
-                    'file_path' => 'public/uploads/' . $newNameWithExtension 
+                    'file' => $mp3Name,
+                    'file_path' => $mp3FileName,
+                    'listtype' => $this->request->getVar('play'),
                 ];
 
-                echo "Data ready for insertion: " . print_r($data, true) . "<br>";
-
-                     $this->player->insert($data);
-
-                echo "Data insertion attempted.<br>";
-
-                return redirect()->to('/player')->with('success', 'File uploaded and data saved successfully!');
-            } else {
-                echo "File upload failed. Please try again.<br>";
-
-                return redirect()->to('/error')->with('error', 'File upload failed. Please try again.');
+                    $this->player->save($data);
+                    return redirect()->to('/');
+                }
+                
+             else {
+                return redirect()->back()->with('error', 'MP3 file upload failed.');
             }
+
         }
 
 
 
+    public function insert2()
+        {
+        
+                $data = [
+                    'playlist' => $this->request->getVar('cplaylist'),
+                ];
+
+                    $this->playL->save($data);
+                    return redirect()->to('/');
+
+        }
 
 
 
     public function home()
     {
         $data['player'] = $this->player->findAll();
+        $data['playL'] = $this->playL->findAll();
         return view('welcome_message', $data);
     }
+
+    public function delete($id)
+    {
+        $this->player->delete($id);
+        return redirect()->to('/');
+    }
+
+     public function search()
+    {
+        $searchQuery = $this->request->getVar('file');
+        $data['searchQuery'] = $searchQuery;
+        return view('welcome_message', $data);
+    }
+
 }

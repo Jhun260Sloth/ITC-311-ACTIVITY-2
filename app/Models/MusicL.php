@@ -4,17 +4,16 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class MusicModel extends Model
+class MusicL extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'music';
+    protected $table            = 'MusicPlaylist';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields = ['file', 'file_path', 'listtype'];
-
+    protected $allowedFields    = ['playlist'];
 
     // Dates
     protected $useTimestamps = false;
